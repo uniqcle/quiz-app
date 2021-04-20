@@ -32,14 +32,14 @@ const quizData = [
         correct: "b",
     }
 ]; 
-
-const questionEl = document.getElementById('question'); 
-const a_text = document.getElementById('a_text'); 
+const quiz = document.getElementById('quiz-container');
+const question = document.getElementById('question'); 
+const a_text = document.getElementById("a_text"); 
 const b_text = document.getElementById('b_text'); 
 const c_text = document.getElementById('c_text'); 
-const d_text = document.getElementById('d_text');
-const submitBtn = document.getElementById('submit');  
-const answersEls = document.querySelectorAll(".answer"); 
+const d_text = document.getElementById('d_text'); 
+const answerEls = document.querySelectorAll('.answer'); 
+const submitBtn = document.getElementById('submit'); 
 
 let currentQuiz = 0; 
 let score = 0; 
@@ -47,54 +47,55 @@ let score = 0;
 loadQuiz(); 
 
 function loadQuiz(){
+    deselected(); 
 
-    deselectAnswers(); 
-
-    currentQuizData = quizData[currentQuiz]; 
-
-    questionEl.innerText = currentQuizData.question; 
-    a_text.innerText = currentQuizData.a;
-    b_text.innerText = currentQuizData.b;
-    c_text.innerText = currentQuizData.c;
+    const currentQuizData = quizData[currentQuiz];
+  
+    question.innerText =  currentQuizData.question; 
+    a_text.innerText = currentQuizData.a; 
+    b_text.innerText = currentQuizData.b; 
+    c_text.innerText = currentQuizData.c; 
     d_text.innerText = currentQuizData.d; 
 
+
 }
 
-function getAnswer(){
+function getSelected(){
     let answer = undefined; 
 
-    answersEls.forEach( el => {
-        if(el.checked){
-            answer = el.id; 
+    answerEls.forEach(elem=>{
+        if( elem.checked )
+            answer = elem.id; 
+
+    })
+
+    return answer; 
+}
+
+function deselected(){
+        answerEls.forEach(elem=>{
+            elem.checked = false; 
+    })
+}
+
+submitBtn.addEventListener("click", (e)=>{
+    let answer = getSelected(); 
+
+    if( answer ){
+        if( answer === quizData[currentQuiz].correct ) score++; 
+        console.log( score )
+
+        currentQuiz++; 
+
+        if( currentQuiz < quizData.length ){
+            loadQuiz(); 
+        } else {
+            quiz.innerHTML = `${score}`; 
         }
-        return answer; 
-    })
-}
 
-function deselectAnswers(){
-    answersEls.forEach( el => {
-        el.checked = false; 
-    })
-}
 
-submitBtn.addEventListener('click', ()=> {
-    const answer = getAnswer(); 
-
-    if(answer){
-        if(answer === quizdata[currentQuiz].correct){ score++ }
     }
 
-    currentQuiz++; 
 
-    if( currentQuiz < quizData.length ){
-        loadQuiz(); 
-    } else {
-        //TODO: Show modal view results
-        alert(' You finished. Congratulations! ' + score ); 
-    }
-
-    
+  
 }); 
-
-
-
